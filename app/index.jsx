@@ -12,6 +12,7 @@ export default function App(){
 
             <Link href="/Profile">Gfo to i</Link>
             <Link href="/Home">Gfo to home</Link>
+            <Link href="/Home">Gfo to yoyo</Link>
         </View>
     );
 }
