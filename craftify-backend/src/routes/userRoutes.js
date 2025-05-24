@@ -1,3 +1,6 @@
+const jwt = require("jsonwebtoken");
+require("dotenv").config(); // Ensure you can access process.env.JWT_SECRET
+
 const express = require("express");
 const bcrypt = require("bcrypt");
 const pool = require("../config/db");
@@ -115,9 +118,28 @@ router.post("/SignIn", async (req, res) => {
         }
 
         console.log("✅ Login Successful:", user.username);
+
+        // ✅ Generate JWT Token
+        const token = jwt.sign(
+            {
+                id: user.id,
+                username: user.username,
+                email: user[column],
+                role: role.toLowerCase()
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" } // Token valid for 7 days
+        );
+
         res.status(200).json({
             message: "Login successful!",
-            user: { id: user.id, username: user.username, email: user[column], role },
+            token,
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user[column],
+                role
+            },
         });
 
     } catch (error) {
