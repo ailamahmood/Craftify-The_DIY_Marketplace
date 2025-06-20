@@ -35,20 +35,23 @@ const SignIn = () => {
 
             if (response.ok) {
                 Alert.alert("Success", "Signed in successfully!");
-
-                // Store user details in AsyncStorage
-                await AsyncStorage.setItem("user", JSON.stringify(data.user));
-
+            
+                // Store user details AND token in AsyncStorage
+                await AsyncStorage.setItem("user", JSON.stringify({
+                  ...data.user,
+                  token: data.token,
+                }));
+            
                 // Navigate based on role
                 if (role.toLowerCase() === "customer") {
                     router.replace("/Home"); // Customer Home tab
                 } else if (role.toLowerCase() === "seller") {
                     router.replace("/Store"); // Seller Store tab
                 }
-
             } else {
                 Alert.alert("Error", data.error || "Invalid credentials.");
             }
+            
         } catch (error) {
             Alert.alert("Error", "Failed to connect to the server.");
             console.error("Sign In Error:", error);

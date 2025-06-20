@@ -19,7 +19,7 @@ const ProductCard = ({ item, onPress }) => {
         setCustomerId(user.id);
       }
     };
-    fetchCustomerId();
+    fetchCustomerId(); 
   }, []);
 
   const toggleHeart = async () => {
@@ -104,7 +104,7 @@ const ProductCard = ({ item, onPress }) => {
           ⭐ {item.rating ? parseFloat(item.rating).toFixed(1) : '0.0'}
         </Text>
       </View>
-    </TouchableOpacity>
+    </TouchableOpacity> 
   );
 };
 

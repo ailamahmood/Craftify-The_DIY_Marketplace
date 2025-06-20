@@ -112,6 +112,6 @@ const ProductList = ({ searchQuery, selectedAgeGroup, selectedCategoryId }) => {
       />
     </View>
   );
-};
+}; 
 
 export default ProductList;

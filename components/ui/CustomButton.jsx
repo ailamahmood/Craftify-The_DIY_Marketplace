@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, Text } from "react-native";
+import { TouchableOpacity, Text,ActivityIndicator } from "react-native";
 
 const CustomButton = ({ title, onPress, isLoading = false, bgColor = "#704F38", titleColor = "#FFF", containerStyles}) => {
     return (

@@ -164,7 +164,14 @@ const Store = () => {
     // Store exists: show info
     return (
         <ScrollView contentContainerStyle={{ padding: 20 }}>
-            <View className="mt-10 mb-8">
+
+            {/* Header */}
+      <Text style={{ fontFamily: "inknutantiqua_bold", fontSize: 28 }} className="text-lightblack mt-4 text-center">
+        Craftify
+        <Text className="text-brown">.</Text>
+      </Text>
+
+            <View className="mt-2 mb-8">
                     <Text className="text-lightblack mt-1 text-[28px] font-i28_semibold text-center">Your Store</Text>
                 </View>
 
@@ -181,7 +188,7 @@ const Store = () => {
 
             <CustomButton
                 title="View Store"
-                onPress={() => router.push("/SAccount")}
+                onPress={() => router.push("/Products")}
                 containerStyles="mt-10"
             />
         </ScrollView>

@@ -1,16 +1,45 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
+const verifyToken = require('../middleware/verifyToken'); 
+router.use(verifyToken);
 
-// Middleware to get seller's store_id (assuming you use authentication middleware that adds seller info to req)
-function getStoreIdFromUser(req) {
-  // Example: you have req.seller from JWT or session
-  return req.seller?.store_id;
+async function getStoreIdFromUser(req) {
+  // Check if user is logged in and is a seller
+  const user = req.user;
+
+  if (!user || user.role !== 'seller') {
+    return null; // Not authorized
+  }
+
+  // If store_id already exists in token, use it
+  if (user.store_id) {
+    return user.store_id;
+  }
+
+  try {
+    // Fetch store_id from DB using seller id
+    const result = await pool.query(
+      'SELECT store_id FROM store WHERE seller_id = $1',
+      [user.id]
+    );
+
+    if (result.rows.length === 0) {
+      return null;
+    }
+
+    return result.rows[0].store_id;
+
+  } catch (err) {
+    console.error('Error fetching store_id:', err);
+    return null;
+  }
 }
+
 
 // GET all products by seller's store_id
 router.get('/Q', async (req, res) => {
-  const store_id = getStoreIdFromUser(req);
+  const store_id = await getStoreIdFromUser(req);
 
   if (!store_id) {
     return res.status(401).json({ error: 'Unauthorized: Store ID not found' });
@@ -96,7 +125,7 @@ router.get('/Q', async (req, res) => {
 // GET product detail by productId (ensure it belongs to seller)
 router.get('/:productId', async (req, res) => {
   const { productId } = req.params;
-  const store_id = getStoreIdFromUser(req);
+  const store_id = await getStoreIdFromUser(req);
 
   if (!store_id) {
     return res.status(401).json({ error: 'Unauthorized: Store ID not found' });

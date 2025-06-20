@@ -51,9 +51,9 @@ const TabsLayout = () => {
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
                             <TabIcon
-                                icon={icons.user}
+                                icon={icons.store}
                                 color={color}
-                                name="Products"
+                                name="Product"
                                 focused={focused}
                             />
                         )
@@ -67,9 +67,9 @@ const TabsLayout = () => {
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
                             <TabIcon
-                                icon={icons.user}
+                                icon={icons.dashboard}
                                 color={color}
-                                name="Dashboard"
+                                name="Dashbord"
                                 focused={focused}
                             />
                         )
@@ -83,7 +83,7 @@ const TabsLayout = () => {
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
                             <TabIcon
-                                icon={icons.user}
+                                icon={icons.add}
                                 color={color}
                                 name="Add"
                                 focused={focused}
@@ -99,11 +99,11 @@ const TabsLayout = () => {
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
                             <TabIcon
-                                icon={icons.user}
+                                icon={icons.orders}
                                 color={color}
                                 name="Orders"
                                 focused={focused}
-                            />
+                            /> 
                         )
                     }}
                 />

@@ -1,7 +1,9 @@
 //const BASE_URL = "http://192.168.0.104:5000/api"; // Use your actual IP
 
-const BASE_URL = "http://192.168.0.106:5000/api"; // University IP
+//const BASE_URL = "http://10.140.176.129:5000/api"; // University IP
 
+
+const BASE_URL = "http://192.168.215.83:5000/api"; // University IP
 
 
 export const USERS_API = `${BASE_URL}/users`;
@@ -15,6 +17,8 @@ export const STORE_API = `${BASE_URL}/store`;
 export const CUSTOMER_API = `${BASE_URL}/customer`; 
 export const CHECKOUT_API = `${BASE_URL}/orders/checkout`;
 
+export const SELLERPRODUCT_API = `${BASE_URL}/sellerProduct`;
+export const MANAGEPRODUCT_API = `${BASE_URL}/manageProduct`;
 
 export default BASE_URL;
 

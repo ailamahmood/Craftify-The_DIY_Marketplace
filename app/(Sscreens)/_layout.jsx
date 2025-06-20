@@ -14,6 +14,13 @@ const SscreensLayout = () => {
           }}
         />
 
+<Stack.Screen
+          name="EditProduct"
+          options={{
+            headerShown: false
+          }}
+        />
+
       </Stack>
 
       <StatusBar style="light" />

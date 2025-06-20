@@ -98,7 +98,7 @@ const PersonalInfo = () => {
             <CustomInput
                 placeholder="Add your phone number - 03xxxxxxxxx"
                 keyboardType="phone-pad"
-                containerStyles="mb-4"
+                containerStyles="mb-4 h-14"
                 value={form.phone_number}
                 editable={editMode}
                 onChangeText={(text) => setForm({ ...form, phone_number: text })}

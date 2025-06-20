@@ -13,7 +13,9 @@ const leaderboardRoutes = require('./src/routes/leaderboardRoutes');
 const storeRoutes = require('./src/routes/storeRoutes');
 const customerRoutes = require('./src/routes/customerRoutes');
 const checkoutRoutes = require('./src/routes/checkoutRoutes');
+
 const sellerProductRoutes = require('./src/routes/sellerProductRoutes');
+const manageProductRoutes = require('./src/routes/manageProductRoutes');
 
 const app = express();
 app.use(cors());
@@ -29,8 +31,9 @@ app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/store', storeRoutes);
 app.use('/api/customer', customerRoutes);
 app.use('/api/orders', checkoutRoutes);
-app.use('/api/sellerProduct', sellerProductRoutes);
 
+app.use('/api/sellerProduct', sellerProductRoutes);
+app.use('/api/manageProduct', manageProductRoutes);
 
 
 
