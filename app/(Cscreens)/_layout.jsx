@@ -40,6 +40,34 @@ const CscreensLayout = () => {
           }}
         />
 
+<Stack.Screen
+          name="MemoryBook"
+          options={{
+            headerShown: false
+          }}
+        />
+
+<Stack.Screen
+          name="Memory"
+          options={{
+            headerShown: false
+          }}
+        />
+
+<Stack.Screen
+          name="MyOrders"
+          options={{
+            headerShown: false
+          }}
+        />
+
+<Stack.Screen
+          name="OrderDetails"
+          options={{
+            headerShown: false
+          }}
+        />
+
       </Stack>
 
       <StatusBar style="light" />

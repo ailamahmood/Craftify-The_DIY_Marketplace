@@ -63,7 +63,7 @@ const Account = () => {
           <AccountOption
             icon="book"
             title="Memory Book"
-            subtitle="See your saved crafts"
+            subtitle="See your crafts journey"
             onPress={() => router.push("/MemoryBook")}
           />
 
@@ -105,7 +105,7 @@ const Account = () => {
         </ScrollView>
       ) : (
         <View className="flex-1 justify-center items-center">
-          <Text>Loading...</Text>
+          <Text className="font-i28_regular">Loading...</Text>
         </View>
       )}
     </View>

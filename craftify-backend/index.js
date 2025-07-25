@@ -13,6 +13,9 @@ const leaderboardRoutes = require('./src/routes/leaderboardRoutes');
 const storeRoutes = require('./src/routes/storeRoutes');
 const customerRoutes = require('./src/routes/customerRoutes');
 const checkoutRoutes = require('./src/routes/checkoutRoutes');
+const memoryRoutes = require('./src/routes/memoryRoutes');
+const orderRoutes = require('./src/routes/orderRoutes');
+
 
 const sellerProductRoutes = require('./src/routes/sellerProductRoutes');
 const manageProductRoutes = require('./src/routes/manageProductRoutes');
@@ -30,7 +33,9 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/store', storeRoutes);
 app.use('/api/customer', customerRoutes);
-app.use('/api/orders', checkoutRoutes);
+app.use('/api/checkout', checkoutRoutes);
+app.use('/api/memory', memoryRoutes);
+app.use('/api/orders', orderRoutes);
 
 app.use('/api/sellerProduct', sellerProductRoutes);
 app.use('/api/manageProduct', manageProductRoutes);

@@ -1,4 +1,4 @@
-// routes/orderRoutes.js
+// routes/checkoutRoutes.js
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
