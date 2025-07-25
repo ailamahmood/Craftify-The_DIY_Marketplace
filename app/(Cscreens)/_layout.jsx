@@ -68,6 +68,13 @@ const CscreensLayout = () => {
           }}
         />
 
+<Stack.Screen
+          name="Review"
+          options={{
+            headerShown: false
+          }}
+        />
+
       </Stack>
 
       <StatusBar style="light" />

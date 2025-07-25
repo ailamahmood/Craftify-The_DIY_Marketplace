@@ -125,7 +125,8 @@ router.get('/', async (req, res) => {
       if (!reviewMap[r.product_id]) reviewMap[r.product_id] = [];
       reviewMap[r.product_id].push({
         review_text: r.review_text,
-        image_url: r.image_url
+        image_url: r.image_url,
+        image_url2: r.image_url2
       });
     });
     console.log('Review Map:', reviewMap);
@@ -212,7 +213,8 @@ console.log(`Average Rating: ${product.avg_rating}, Number of Ratings: ${product
     const reviewResult = await pool.query(`
       SELECT 
         r.review_text, 
-        r.image_url, 
+        r.image_url,
+        r.image_url2, 
         r.rating,
         c.username AS customer_name
       FROM review r
@@ -241,6 +243,7 @@ console.log(`Average Rating: ${product.avg_rating}, Number of Ratings: ${product
     const reviews = reviewResult.rows.map(r => ({
       review_text: r.review_text,
       image_url: r.image_url,
+      image_url2: r.image_url2,
       rating: r.rating,
       customer_name: r.customer_name
     }));

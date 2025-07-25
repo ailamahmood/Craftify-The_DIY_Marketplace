@@ -18,6 +18,7 @@ export const CUSTOMER_API = `${BASE_URL}/customer`;
 export const CHECKOUT_API = `${BASE_URL}/checkout/checkout`;
 export const MEMORY_API = `${BASE_URL}/memory`;
 export const ORDERS_API = `${BASE_URL}/orders`;
+export const REVIEWS_API = `${BASE_URL}/reviews`;
 
 export const SELLERPRODUCT_API = `${BASE_URL}/sellerProduct`;
 export const MANAGEPRODUCT_API = `${BASE_URL}/manageProduct`;

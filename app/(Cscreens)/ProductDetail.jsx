@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, Dimensions, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, ScrollView, Dimensions, ActivityIndicator, Alert, Pressable } from 'react-native';
+import ImageViewing from "react-native-image-viewing";
 import { useLocalSearchParams } from 'expo-router';
 import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,6 +19,11 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true);
   const [selectedOptions, setSelectedOptions] = useState({}); // Store selected option values
   const [customerId, setCustomerId] = useState(null);
+  const [isViewerVisible, setIsViewerVisible] = useState(false);
+  const [viewerImages, setViewerImages] = useState([]);
+  const [initialIndex, setInitialIndex] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
 
   useEffect(() => {
     const fetchCustomerId = async () => {
@@ -262,25 +268,65 @@ export default function ProductDetail() {
                     {review.review_text && (
                       <Text className="text-base font-i24_regular text-gray-700 mb-2">{review.review_text}</Text>
                     )}
-                    {review.image_url && (
-                      <Image
-                        source={{ uri: review.image_url }}
-                        style={{ width: "100%", height: 200, borderRadius: 10 }}
-                        contentFit="cover"
-                      />
+                    {(review.image_url || review.image_url2) && (
+                      <View className="relative mt-2">
+                        <ScrollView
+                          horizontal
+                          pagingEnabled
+                          showsHorizontalScrollIndicator={false}
+                          onScroll={e => {
+                            const slide = Math.round(e.nativeEvent.contentOffset.x / 285); // match your image width
+                            setCurrentSlide(slide);
+                          }}
+                          scrollEventThrottle={16}
+                        >
+                          {[review.image_url, review.image_url2]
+                            .filter(Boolean)
+                            .map((url, idx, array) => (
+                              <Pressable
+                                key={idx}
+                                onPress={() => {
+                                  setViewerImages(array.map(u => ({ uri: u })));
+                                  setInitialIndex(idx);
+                                  setIsViewerVisible(true);
+                                }}
+                              >
+                                <Image
+                                  source={{ uri: url }}
+                                  style={{ width: 285, height: 200, borderRadius: 10, marginRight: 5 }}
+                                  contentFit="cover"
+                                />
+                              </Pressable>
+                            ))}
+                        </ScrollView>
+
+                        {/* Top-right 1/2 counter */}
+                        <View className="absolute top-2 right-3 bg-black/60 px-2 py-0.5 rounded-xl">
+                          <Text className="text-white text-xs">
+                            {currentSlide + 1}/{[review.image_url, review.image_url2].filter(Boolean).length}
+                          </Text>
+                        </View>
+
+                      </View>
                     )}
+
                   </View>
                 ))
             ) : (
               <Text className="text-base font-i24_regular text-gray-700">No reviews yet. Be the first to review!</Text>
             )}
           </View>
-
-
-
         </View>
 
       </ScrollView>
+
+      <ImageViewing
+        images={viewerImages}
+        imageIndex={initialIndex}
+        visible={isViewerVisible}
+        onRequestClose={() => setIsViewerVisible(false)}
+      />
+
 
       {/* Fixed Bottom Button */}
       <View className='mt-1 bg-gray-100 px-4 py-2 rounded-lg'>

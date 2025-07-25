@@ -31,9 +31,8 @@ router.get('/:customerId', async (req, res) => {
     }
 });
 
-// ✅ GET all items in a specific order
-router.get('/items/:orderId', async (req, res) => {
-    const { orderId } = req.params;
+router.get('/items/:orderId/:customerId', async (req, res) => {
+    const { orderId, customerId } = req.params;
 
     try {
         const { rows } = await pool.query(
@@ -45,21 +44,29 @@ router.get('/items/:orderId', async (req, res) => {
                 oi.selected_options,
                 p.product_id,
                 p.product_name,
-                pm.media_url AS cover_image_url
+                pm.media_url AS cover_image_url,
+                o.status,
+                EXISTS (
+                    SELECT 1
+                    FROM review r
+                    WHERE r.customer_id = $2 AND r.product_id = p.product_id
+                ) AS has_review
             FROM order_item oi
             JOIN product p ON oi.product_id = p.product_id
             LEFT JOIN product_media pm ON p.product_id = pm.product_id AND pm.sort_order = 1
+            JOIN "order" o ON oi.order_id = o.order_id
             WHERE oi.order_id = $1`,
-            [orderId]
+            [orderId, customerId]
         );
 
         res.json(rows);
     } catch (err) {
-        console.error('Error fetching order items:', err.message);
+        console.error('Error fetching order items with reviews:', err.message);
         res.status(500).json({ error: err.message });
     }
 });
 
+  
 router.get('/completed-items/:customerId', async (req, res) => {
     const { customerId } = req.params;
 

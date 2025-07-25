@@ -15,6 +15,8 @@ const customerRoutes = require('./src/routes/customerRoutes');
 const checkoutRoutes = require('./src/routes/checkoutRoutes');
 const memoryRoutes = require('./src/routes/memoryRoutes');
 const orderRoutes = require('./src/routes/orderRoutes');
+const reviewRoutes = require('./src/routes/reviewRoutes');
+
 
 
 const sellerProductRoutes = require('./src/routes/sellerProductRoutes');
@@ -36,6 +38,7 @@ app.use('/api/customer', customerRoutes);
 app.use('/api/checkout', checkoutRoutes);
 app.use('/api/memory', memoryRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 app.use('/api/sellerProduct', sellerProductRoutes);
 app.use('/api/manageProduct', manageProductRoutes);
