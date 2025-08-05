@@ -12,9 +12,6 @@ const MemoryBook = () => {
   const [items, setItems] = useState([]);
   const [customerId, setCustomerId] = useState(null);
 
- 
-
-
   useEffect(() => {
     const fetchUser = async () => {
       try {

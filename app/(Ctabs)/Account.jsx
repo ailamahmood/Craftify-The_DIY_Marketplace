@@ -54,6 +54,13 @@ const Account = () => {
           />
 
           <AccountOption
+            icon="comments"
+            title="My Chats"
+            subtitle="See your chats with sellers"
+            onPress={() => router.push("/ChatList")}
+          />
+
+          <AccountOption
             icon="trophy"
             title="Leaderboard"
             subtitle="Check your rank and rewards"
@@ -82,7 +89,7 @@ const Account = () => {
           />
 
           <TouchableOpacity
-            className="items-center mt-6"
+            className="items-center mt-6 mb-10"
             onPress={() => {
               Alert.alert(
                 "Confirm Logout",

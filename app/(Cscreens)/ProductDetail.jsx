@@ -3,6 +3,7 @@ import { View, Text, ScrollView, Dimensions, ActivityIndicator, Alert, Pressable
 import ImageViewing from "react-native-image-viewing";
 import { useLocalSearchParams } from 'expo-router';
 import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import CustomButton from "../../components/ui/CustomButton";
@@ -15,6 +16,7 @@ const { width } = Dimensions.get('window');
 
 export default function ProductDetail() {
   const { productId } = useLocalSearchParams();
+  const router = useRouter();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedOptions, setSelectedOptions] = useState({}); // Store selected option values
@@ -86,8 +88,6 @@ export default function ProductDetail() {
       const cartItem = {
         customer_id: customerId,
         product_id: productId,
-        //options: selectedOptions
-        //selected_options: Object.values(selectedOptions)
         selected_options: selectedOptions
       };
 
@@ -125,6 +125,8 @@ export default function ProductDetail() {
   const {
     media = [],
     product_name,
+    store_id,
+    store_name,
     price,
     avg_rating = 0,
     num_reviews = 0,
@@ -188,6 +190,27 @@ export default function ProductDetail() {
           {/* Product Name */}
           <Text className="text-xl text-brown font-i24_bold">{product_name}</Text>
 
+          {/* Store Info */}
+          <Pressable 
+            onPress={() => {
+              console.log("Navigate to store:", store_id);
+              router.push({
+                pathname: '(Cscreens)/StorePage',
+                params: {
+                  storeId: product.store_id,
+                  storeName: product.store_name,
+                },
+              });
+            }}
+          >
+            <Text className="text-sm font-i24_regular text-gray-700">
+              From{' '}
+              <Text className="text-base font-i24_semibold text-brown underline">
+                {store_name}
+              </Text>
+            </Text>
+          </Pressable>
+
           {/* Price & Rating */}
           <View className="flex-row justify-between items-center">
             <Text className="text-gray-700 text-lg font-i24_semibold">PKR {price}</Text>
@@ -195,7 +218,6 @@ export default function ProductDetail() {
               ⭐ {parseFloat(avg_rating).toFixed(1)} ({num_reviews} {num_reviews === 1 ? 'rating' : 'ratings'})
             </Text>
           </View>
-
 
           {/* Description */}
           {description && (

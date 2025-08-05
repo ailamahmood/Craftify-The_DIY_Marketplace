@@ -75,6 +75,13 @@ const CscreensLayout = () => {
           }}
         />
 
+<Stack.Screen
+          name="StorePage"
+          options={{
+            headerShown: false
+          }}
+        />
+
       </Stack>
 
       <StatusBar style="light" />

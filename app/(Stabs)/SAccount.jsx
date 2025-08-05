@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Alert } from "react-native";
+import { View, Text, TouchableOpacity, Alert, ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import AccountOption from "../../components/ui/AccountOption";
 
 const SAccount = () => {
     const [user, setUser] = useState(null);
@@ -20,27 +21,85 @@ const SAccount = () => {
         fetchUser();
     }, []);
 
-    return (
-        <View className="flex-1 justify-center items-center bg-white">
-            {user ? (
-                <>
-                    <Text className="text-2xl font-semibold">Welcome, {user.username}!</Text>
-                    <Text className="text-gray-500">Role: {user.role}</Text>
-                </>
-            ) : (
-                <Text>Loading...</Text>
-            )}
+    const handleLogout = async () => {
+        await AsyncStorage.removeItem("user");
+        router.replace("/SignIn");
+    };
 
-            <TouchableOpacity 
-                className="bg-red-500 py-2 px-6 mt-10 rounded-lg"
-                onPress={async () => {
-                    await AsyncStorage.removeItem("user");
-                    router.replace("/SignIn");
-                }}
-            >
-                <Text className="text-white font-semibold">Logout</Text>
-            </TouchableOpacity>
+    return (
+        <View className="flex-1 bg-white">
+            {user ? (
+                <ScrollView>
+
+
+                    <View className="mt-12">
+                        <Text className="text-lightblack mt-1 text-[28px] font-i28_semibold text-center">My Account</Text>
+                    </View>
+
+                    <View className="items-center mt-2 mb-4">
+                        <Text className="text-base text-gray-500 font-i28_regular">Welcome, {user.username}!</Text>
+                        <Text className="text-gray-500">Role: {user.role}</Text>
+                    </View>
+
+
+                    <AccountOption
+                        icon="user-circle"
+                        title="Personal Info"
+                        subtitle="Edit your account information"
+                        onPress={() => router.push("/")}
+                    />
+
+                    <AccountOption
+                        icon="comments"
+                        title="My Chats"
+                        subtitle="See chats of customers"
+                        onPress={() => router.push("/ChatList")}
+                    />
+
+                    <AccountOption
+                        icon="building"
+                        title="Charitable Organizations"
+                        subtitle="View partnered organization details"
+                        onPress={() => router.push("/CharityOrgs")}
+                    />
+
+                    <AccountOption
+                        icon="question-circle"
+                        title="FAQ"
+                        subtitle="Frequently asked questions"
+                        onPress={() => router.push("/FAQ")}
+                    />
+
+                    <TouchableOpacity
+                        className="items-center mt-6"
+                        onPress={() => {
+                            Alert.alert(
+                                "Confirm Logout",
+                                "Are you sure you want to log out?",
+                                [
+                                    { text: "Cancel", style: "cancel" },
+                                    {
+                                        text: "Log Out",
+                                        style: "destructive",
+                                        onPress: handleLogout,
+                                    },
+                                ],
+                                { cancelable: true }
+                            );
+                        }}
+                    >
+                        <Text className="text-red-600 font-i28_semibold text-base">Log Out</Text>
+                    </TouchableOpacity>
+
+
+                </ScrollView>
+            ) : (
+                <View className="flex-1 justify-center items-center">
+                    <Text className="font-i28_regular">Loading...</Text>
+                </View>
+            )}
         </View>
+
     );
 };
 
