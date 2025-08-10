@@ -14,6 +14,7 @@ router.get('/:customerId', async (req, res) => {
   p.product_name,
   p.price,
   p.description,
+  p.charity_percentage,
   pm.media_url,
   c.quantity,
   c.selected_options

@@ -10,6 +10,7 @@ export const USERS_API = `${BASE_URL}/users`;
 export const OTP_API = `${BASE_URL}/otp`;
 export const CATEGORIES_API = `${BASE_URL}/categories`;
 export const PRODUCTS_API = `${BASE_URL}/products`;
+export const PRODUCT_SEARCH_API = `${PRODUCTS_API}/search`;
 export const WISHLIST_API = `${BASE_URL}/wishlist`;
 export const CART_API = `${BASE_URL}/cart`;
 export const LEADERBOARD_API = `${BASE_URL}/leaderboard`;
@@ -20,9 +21,14 @@ export const MEMORY_API = `${BASE_URL}/memory`;
 export const ORDERS_API = `${BASE_URL}/orders`;
 export const REVIEWS_API = `${BASE_URL}/reviews`;
 export const CHAT_API = `${BASE_URL}/chat`;
+export const POINTS_API = `${BASE_URL}/points`;
+export const CHARITY_API = `${BASE_URL}/charity`;
 
+export const SELLER_API = `${BASE_URL}/seller`;
 export const SELLERPRODUCT_API = `${BASE_URL}/sellerProduct`;
 export const MANAGEPRODUCT_API = `${BASE_URL}/manageProduct`;
+export const SELLERORDER_API = `${BASE_URL}/sellerOrder`;
+export const SELLERDASHBOARD_API = `${BASE_URL}/sellerDashboard`;
 
 export default BASE_URL;
 

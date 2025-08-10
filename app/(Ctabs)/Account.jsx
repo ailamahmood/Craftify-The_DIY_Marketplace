@@ -77,8 +77,8 @@ const Account = () => {
           <AccountOption
             icon="building"
             title="Charitable Organizations"
-            subtitle="View partnered organization details"
-            onPress={() => router.push("/CharityOrgs")}
+            subtitle="View partnered org. and charity details"
+            onPress={() => router.push("/CharityScreen")}
           />
 
           <AccountOption

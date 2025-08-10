@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, FlatList, Text, ActivityIndicator } from 'react-native';
 import ProductCard from './ProductCard';
 import { PRODUCTS_API } from '../../config/apiConfig';
+import { PRODUCT_SEARCH_API } from '../../config/apiConfig';
 import axios from 'axios';
 import { useRouter } from 'expo-router';  // <-- Import useRouter from expo-router
 
@@ -19,47 +20,74 @@ const ProductList = ({ searchQuery, selectedAgeGroup, selectedCategoryId }) => {
   const fetchProducts = async () => {
     setLoading(true);
     try {
+      let res;
+  
       const queryParams = {};
-
-      // --- AGE GROUP LOGIC ---
-      if (selectedAgeGroup) {
-        switch (selectedAgeGroup) {
-          case 'Kids':
-            queryParams.age_group = ['kids', 'all'];
-            break;
-          case 'Teens':
-            queryParams.age_group = ['teens', 'all'];
-            break;
-          case 'Adults':
-            queryParams.age_group = ['adults', 'all'];
-            break;
-          case 'All Ages':
-            queryParams.age_group = ['all'];
-            break;
-          default:
-            break; // no filter
+  
+      // Search logic
+      if (searchQuery?.trim()) {
+        queryParams.q = searchQuery.trim();
+  
+        // 👇 Add category filter to search query
+        if (selectedCategoryId && selectedCategoryId !== 'All') {
+          queryParams.category_id = selectedCategoryId;
         }
+  
+        // 👇 Add age filter to search query
+        if (selectedAgeGroup) {
+          switch (selectedAgeGroup) {
+            case 'Kids':
+              queryParams.age_group = ['kids', 'all'];
+              break;
+            case 'Teens':
+              queryParams.age_group = ['teens', 'all'];
+              break;
+            case 'Adults':
+              queryParams.age_group = ['adults', 'all'];
+              break;
+            case 'All Ages':
+              queryParams.age_group = ['all'];
+              break;
+          }
+        }
+  
+        res = await axios.get(PRODUCT_SEARCH_API, { params: queryParams });
+  
+      } else {
+        // No searchQuery, fallback to normal product listing
+        if (selectedAgeGroup) {
+          switch (selectedAgeGroup) {
+            case 'Kids':
+              queryParams.age_group = ['kids', 'all'];
+              break;
+            case 'Teens':
+              queryParams.age_group = ['teens', 'all'];
+              break;
+            case 'Adults':
+              queryParams.age_group = ['adults', 'all'];
+              break;
+            case 'All Ages':
+              queryParams.age_group = ['all'];
+              break;
+          }
+        }
+  
+        if (selectedCategoryId && selectedCategoryId !== 'All') {
+          queryParams.category_id = selectedCategoryId;
+        }
+  
+        res = await axios.get(PRODUCTS_API, { params: queryParams });
       }
-
-      // CATEGORY FILTER
-      if (selectedCategoryId && selectedCategoryId !== 'All') {
-        queryParams.category_id = selectedCategoryId;
-      }
-
-      // SEARCH FILTER (if implemented in backend)
-      if (searchQuery) {
-        queryParams.search = searchQuery;
-      }
-
-      const res = await axios.get(PRODUCTS_API, { params: queryParams });
-      setProducts(res.data);
+  
+      const data = res.data?.products || res.data;
+      setProducts(data);
     } catch (err) {
-      console.error('Error fetching products:', err);
+      console.error('Error fetching products:', err.message);
     } finally {
       setLoading(false);
     }
-  };
-
+  };  
+  
   const renderItem = ({ item }) => (
     
     <ProductCard

@@ -4,6 +4,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import CustomInput from "../../components/ui/CustomInput";
 import ProductList from "../../components/ui/ProductList"; 
 import { useRoute } from "@react-navigation/native";
+import { POINTS_API } from "../../config/apiConfig";
+import { showPointsToast } from "../../utils/showPointsToast";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 const ageGroups = ["All Ages", "Kids", "Teens", "Adults"];
 
@@ -13,6 +17,34 @@ const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedAgeGroup, setSelectedAgeGroup] = useState(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+
+  useEffect(() => {
+    const checkDailyLogin = async () => {
+      try {
+        const userStr = await AsyncStorage.getItem("user");
+        const user = JSON.parse(userStr);
+  
+        if (!user || user.role !== "Customer") return;
+  
+        const res = await axios.post(`${POINTS_API}/daily-login`, {
+          customerId: user.id,
+        });
+  
+        if (res.data?.pointsAwarded) {
+          showPointsToast({
+            points: res.data.pointsAwarded,
+            message: "Thanks for logging in today!",
+          });
+        }
+  
+      } catch (err) {
+        console.log("Daily login points error:", err.message);
+      }
+    };
+  
+    checkDailyLogin();
+  }, []);
+  
 
   // When coming from Categories screen
   useEffect(() => {

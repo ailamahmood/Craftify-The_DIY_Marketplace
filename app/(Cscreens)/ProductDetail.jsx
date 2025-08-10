@@ -177,6 +177,7 @@ export default function ProductDetail() {
               )
             ))
           ) : (
+
             <Image
               source={{ uri: 'https://placehold.co/400x300' }}
               style={{ width, height: 300 }}

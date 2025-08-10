@@ -24,8 +24,6 @@ const CscreensLayout = () => {
 
 
 
-
-
         <Stack.Screen
           name="PersonalInfo"
           options={{
@@ -77,6 +75,20 @@ const CscreensLayout = () => {
 
 <Stack.Screen
           name="StorePage"
+          options={{
+            headerShown: false
+          }}
+        />
+
+<Stack.Screen
+          name="FAQ"
+          options={{
+            headerShown: false
+          }}
+        />
+
+<Stack.Screen
+          name="CharityScreen"
           options={{
             headerShown: false
           }}

@@ -1,7 +1,8 @@
+// components/ui/OrderItemCard.js
 import { View, Text, Image, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 
-const OrderItemCard = ({ item, orderStatus, customerId }) => {
+const OrderItemCard = ({ item, orderStatus, customerId, mode = 'customer' }) => {
   const router = useRouter();
 
   return (
@@ -28,17 +29,22 @@ const OrderItemCard = ({ item, orderStatus, customerId }) => {
           <Text className="text-sm text-gray-600 font-i28_regular">
             Price Each: PKR {item.price_each}
           </Text>
-          <Text className="text-sm text-lightblack mt-2 font-i28_regular">Subtotal: PKR {item.subtotal}</Text>
-
+          {item.charity_percentage > 0 && (
+            <Text className="text-sm text-green-600 font-i28_regular">
+              {item.charity_percentage}% goes to charity
+            </Text>
+          )}
+          <Text className="text-sm text-lightblack mt-2 font-i28_regular">
+            Subtotal: PKR {item.subtotal}
+          </Text>
         </View>
       </View>
 
-      {/* ✅ Show Give Review button if order is completed and review doesn't exist */}
-      {orderStatus === 'completed' && (
-
+      {/* ✅ Only for customer view */}
+      {mode === 'customer' && orderStatus === 'completed' && (
         <Pressable
           onPress={() =>
-            router.push({
+            router.replace({
               pathname: '/(Cscreens)/Review',
               params: {
                 productId: item.product_id,
@@ -48,13 +54,12 @@ const OrderItemCard = ({ item, orderStatus, customerId }) => {
           }
           className="bg-white px-4 py-2 rounded-lg border-t border-gray-300"
         >
-
           <Text className="text-brown text-center font-i28_semibold text-base">
             {item.has_review ? 'Update Review' : 'Give Review'}
           </Text>
-
         </Pressable>
       )}
+
     </View>
   );
 };

@@ -5,6 +5,7 @@ const router = express.Router();
 // Create or get existing chat
 router.post('/', async (req, res) => {
     const { customer_id, seller_id } = req.body;
+    console.log("Received body:", req.body);  // ✅ Debugging line
 
     try {
         const existingChat = await pool.query(

@@ -59,7 +59,7 @@ const Store = () => {
             name: "store_logo.jpg",
             type: "image/jpeg",
         });
-        formData.append("upload_preset", "craftify_unsigned"); // replace with your Cloudinary preset
+        formData.append("upload_preset", "craftify_unsigned"); 
         formData.append("folder", "logos");
 
         const res = await fetch("https://api.cloudinary.com/v1_1/dmeicwx5d/image/upload", {

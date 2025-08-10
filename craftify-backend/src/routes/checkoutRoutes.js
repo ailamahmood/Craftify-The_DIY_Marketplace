@@ -2,6 +2,8 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
+const { sendOrderPlacedEmail } = require('../utils/email');
+
 
 router.post('/checkout', async (req, res) => {
     const client = await pool.connect();
@@ -15,10 +17,11 @@ router.post('/checkout', async (req, res) => {
         // 1. Fetch all cart items for the customer, including product details & selected_options
         const cartResult = await client.query(
             `SELECT c.cart_item_id, c.product_id, c.quantity, c.selected_options,
-              p.price, p.store_id
-       FROM cart c
-       JOIN product p ON c.product_id = p.product_id
-       WHERE c.customer_id = $1`,
+       p.price, p.product_name, p.store_id
+FROM cart c
+JOIN product p ON c.product_id = p.product_id
+WHERE c.customer_id = $1
+`,
             [customer_id]
         );
 
@@ -69,6 +72,18 @@ router.post('/checkout', async (req, res) => {
             }
 
             createdOrders.push({ store_id, order_id });
+
+            try {
+                await sendOrderPlacedEmail(customer_email, {
+                    order_id,
+                    customer_name,
+                    total_amount,
+                    items,
+                });
+            } catch (emailError) {
+                console.error(`Failed to send order email for order ${order_id}:`, emailError.message);
+            }
+
         }
 
         // 4. Clear the cart for this customer

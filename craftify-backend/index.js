@@ -1,4 +1,7 @@
 require("dotenv").config();
+require('./src/jobs/autoCompleteOrders');
+require('./src/jobs/generateMonthlyCharitySummary');
+
 const express = require("express");
 const cors = require("cors");
 const http = require("http");
@@ -24,9 +27,14 @@ const memoryRoutes = require('./src/routes/memoryRoutes');
 const orderRoutes = require('./src/routes/orderRoutes');
 const reviewRoutes = require('./src/routes/reviewRoutes');
 const chatRoutes = require('./src/routes/chatRoutes');
+const pointRoutes = require("./src/routes/pointRoutes");
+const charityRoutes = require("./src/routes/charityRoutes");
 
+const sellerRoutes = require('./src/routes/sellerRoutes');
 const sellerProductRoutes = require('./src/routes/sellerProductRoutes');
 const manageProductRoutes = require('./src/routes/manageProductRoutes');
+const sellerOrderRoutes = require('./src/routes/sellerOrderRoutes');
+const sellerDashboardRoutes = require('./src/routes/sellerDashboardRoutes');
 
 const app = express();
 const server = http.createServer(app); // 👈 create HTTP server
@@ -62,9 +70,14 @@ app.use('/api/memory', memoryRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/chat', chatRoutes);
+app.use("/api/points", pointRoutes);
+app.use('/api/charity', charityRoutes);
 
+app.use('/api/seller', sellerRoutes);
 app.use('/api/sellerProduct', sellerProductRoutes);
 app.use('/api/manageProduct', manageProductRoutes);
+app.use('/api/sellerOrder', sellerOrderRoutes);
+app.use('/api/sellerDashboard', sellerDashboardRoutes);
 
 app.get("/", (req, res) => {
     res.send("Craftify API is running!");

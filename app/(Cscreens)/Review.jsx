@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react';
 import { View, Text, Image, Alert, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
+import StarRating from "../../components/ui/StarRating";
 import { REVIEWS_API } from '../../config/apiConfig';
+import { showPointsToast } from '../../utils/showPointsToast';
+import { POINTS_API } from '../../config/apiConfig';
+import Toast from 'react-native-toast-message';
 import axios from 'axios';
 
 import CustomInput from '../../components/ui/CustomInput';
@@ -107,33 +111,60 @@ const Review = () => {
     if (!rating) {
       return Alert.alert('Missing Fields', 'Please enter rating.');
     }
-
+  
     const reviewPayload = {
       rating: parseFloat(rating),
       review_text: reviewText,
       image_url: image1,
       image_url2: image2,
     };
-
+  
     try {
+      let reviewId = existingReviewId;
+  
       if (existingReviewId) {
         await axios.put(`${REVIEWS_API}/${existingReviewId}`, reviewPayload);
         Alert.alert('Success', 'Review updated successfully!');
       } else {
-        await axios.post(`${REVIEWS_API}`, {
+        const res = await axios.post(`${REVIEWS_API}`, {
           ...reviewPayload,
           customer_id: customerId,
           product_id: productId,
         });
+        reviewId = res.data.review_id; // Make sure your API returns this
         Alert.alert('Success', 'Review submitted successfully!');
       }
-
+  
+      // 👉 Call points API after review is saved
+      try {
+        const pointsRes = await axios.post(`${POINTS_API}/review`, { reviewId });
+      
+        const message = pointsRes.data.message;
+        console.log("✅ Points API responded with message:", message);
+      
+        const match = message.match(/(\d+)\s+points/);
+        const points = match ? parseInt(match[1]) : null;
+      
+        console.log("🏆 Parsed points from message:", points);
+      
+        if (points) {
+          showPointsToast({ points, message });
+        } else {
+          console.log("📭 No points detected in message. Message was:", message);
+        }
+      
+      } catch (err) {
+        console.warn("⚠️ Points not awarded or already given. Error:", err.message);
+      }
+      
+  
       router.back();
     } catch (error) {
       console.error('Submit error:', error.message);
       Alert.alert('Error', 'Something went wrong.');
     }
   };
+  
 
   if (loading) {
     return (
@@ -152,12 +183,11 @@ const Review = () => {
         </View>
 
         {/* Rating input */}
-        <CustomInput
-          placeholder="Rating (0.5 to 5.0)"
-          keyboardType="decimal-pad"
-          value={rating}
-          onChangeText={setRating}
+        <StarRating
+          rating={parseFloat(rating)}
+          onRatingChange={(val) => setRating(val.toString())}
         />
+
 
         {/* Review text */}
         <CustomInput

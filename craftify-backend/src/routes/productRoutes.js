@@ -135,6 +135,90 @@ router.get('/', async (req, res) => {
   }
 });
 
+// ✅ SEARCH PRODUCTS CONTROLLER
+router.get('/search', async (req, res) => {
+  const { q, category_id, age_group } = req.query;
+
+  if (!q || q.trim() === '') {
+    return res.status(400).json({ message: 'Search query is required.' });
+  }
+
+  try {
+    let baseQuery = `
+      SELECT 
+        p.product_id,
+        p.product_name,
+        p.description,
+        p.price,
+        p.stock_quantity,
+        c.category_name,
+        COALESCE(AVG(r.rating), 0)::numeric(3,2) AS avg_rating,
+        COUNT(r.review_id) AS num_reviews
+      FROM product p
+      JOIN category c ON p.category_id = c.category_id
+      LEFT JOIN review r ON r.product_id = p.product_id
+      WHERE (LOWER(p.product_name) LIKE LOWER($1) OR LOWER(p.description) LIKE LOWER($1))
+    `;
+
+    const values = [`%${q}%`];
+    let paramIndex = 2;
+
+    // Filter by category
+    if (category_id) {
+      baseQuery += ` AND p.category_id = $${paramIndex}`;
+      values.push(category_id);
+      paramIndex++;
+    }
+
+    // Filter by age group
+    if (age_group) {
+      baseQuery += ` AND p.age_groups @> $${paramIndex}::text[]`;
+      values.push([age_group]);
+      paramIndex++;
+    }
+    
+
+    baseQuery += `
+      GROUP BY p.product_id, c.category_name
+      ORDER BY p.product_name
+    `;
+
+    const { rows: products } = await pool.query(baseQuery, values);
+
+    const productIds = products.map(p => p.product_id);
+
+    const mediaResult = await pool.query(`
+      SELECT product_id, media_url, media_type, sort_order
+      FROM product_media
+      WHERE product_id = ANY($1::uuid[])
+      ORDER BY product_id, sort_order ASC
+    `, [productIds]);
+
+    const mediaMap = {};
+    mediaResult.rows.forEach(m => {
+      if (!mediaMap[m.product_id]) mediaMap[m.product_id] = [];
+      mediaMap[m.product_id].push({
+        media_url: m.media_url,
+        media_type: m.media_type,
+        sort_order: m.sort_order
+      });
+    });
+
+    const fullProducts = products.map(p => ({
+      ...p,
+      media: mediaMap[p.product_id] || []
+    }));
+
+    res.status(200).json({ products: fullProducts });
+
+  } catch (err) {
+    console.error('Error searching products:', err);
+    res.status(500).json({ message: 'Error searching products' });
+  }
+});
+
+
+
 // GET product detail by productId
 router.get('/:productId', async (req, res) => {
   const { productId } = req.params;
@@ -172,8 +256,8 @@ router.get('/:productId', async (req, res) => {
     }
 
     const product = productResult.rows[0];
-console.log('Product:', product);
-console.log(`Average Rating: ${product.avg_rating}, Number of Ratings: ${product.num_reviews}`);
+    console.log('Product:', product);
+    console.log(`Average Rating: ${product.avg_rating}, Number of Ratings: ${product.num_reviews}`);
 
 
     const mediaResult = await pool.query(`

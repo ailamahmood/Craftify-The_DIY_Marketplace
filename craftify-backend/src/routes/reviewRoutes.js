@@ -20,7 +20,8 @@ router.post('/', async (req, res) => {
         [customer_id, product_id, rating, review_text, image_url, image_url2]
       );
   
-      res.status(201).json({ message: 'Review submitted successfully', review: rows[0] });
+      res.status(201).json({ message: 'Review submitted successfully', review: rows[0],
+        review_id: rows[0].review_id });
     } catch (err) {
       console.error('Error adding review:', err.message);
       if (err.constraint === 'unique_customer_product_review') {

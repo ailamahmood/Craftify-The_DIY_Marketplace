@@ -1,39 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, FlatList, Text, ActivityIndicator } from 'react-native';
 import SellerProductCard from './SellerProductCard';
 import { SELLERPRODUCT_API } from '../../config/apiConfig';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 
 const SellerProductList = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    fetchSellerProducts();
-  }, []);
-
   const fetchSellerProducts = async () => {
     try {
       setLoading(true);
-
       const userData = await AsyncStorage.getItem('user');
       const user = JSON.parse(userData);
-
       const token = user?.token;
       if (!token) {
         console.error('Token not found in user object');
         return;
       }
-
       const response = await axios.get(`${SELLERPRODUCT_API}/Q`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
       setProducts(response.data);
     } catch (err) {
       console.error('Error fetching seller products:', err.message);
@@ -41,6 +33,12 @@ const SellerProductList = () => {
       setLoading(false);
     }
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchSellerProducts();
+    }, [])
+  );
 
   const renderItem = ({ item }) => (
     <SellerProductCard
@@ -51,11 +49,8 @@ const SellerProductList = () => {
         price: item.price,
         rating: item.avg_rating,
         stock_quantity: item.stock_quantity,
-
       }}
       onPress={() => {
-        console.log('Product pressed:', item.product_name);
-        console.log('Product ID:', item.product_id); 
         router.push({
           pathname: '(Sscreens)/EditProduct',
           params: { productId: item.product_id },

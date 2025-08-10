@@ -4,6 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import * as ImagePicker from "expo-image-picker";
 import CustomDropdown from "../../components/ui/CustomDropdown";
 import AgeGroupCheckboxes from "../../components/ui/AgeGroupCheckboxes";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import ProductOptionInput from "../../components/ui/ProductOptionInput";
 import { CATEGORIES_API, MANAGEPRODUCT_API } from '../../config/apiConfig';
 import CustomInput from "../../components/ui/CustomInput";
@@ -41,7 +42,8 @@ const AddProduct = () => {
   const [media, setMedia] = useState([]);
   const [options, setOptions] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [isSubmitting, setIsSubmitting] = useState(false); 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -133,6 +135,7 @@ const AddProduct = () => {
 
       if (res.ok) {
         Alert.alert("Success", "Product added successfully!");
+        router.replace('/(Stabs)/Products');
         reset();
         setMedia([]);
         setOptions([]);
@@ -162,7 +165,7 @@ const AddProduct = () => {
   const onRemoveMedia = (indexToRemove) => {
     setMedia(prevMedia => prevMedia.filter((_, index) => index !== indexToRemove));
   };
-  
+
 
   return (
     <ScrollView className="p-4">
@@ -239,8 +242,8 @@ const AddProduct = () => {
             value={value}
             onChangeText={onChange}
             multiline
-             blurOnSubmit={false}
-      returnKeyType="default"
+            blurOnSubmit={false}
+            returnKeyType="default"
             icon="information-circle-outline"
           />
         )}
@@ -313,36 +316,36 @@ const AddProduct = () => {
         bgColor="transparent"
       />
 
-<ScrollView horizontal showsHorizontalScrollIndicator={false}>
-  {media.map((m, idx) => (
-    <View key={idx} style={{ marginRight: 8, position: "relative" }}>
-      <Image
-        source={{ uri: m.uri }}
-        style={{ width: 80, height: 80, borderRadius: 8 }}
-      />
-      <TouchableOpacity
-  onPress={() => onRemoveMedia(idx)}
-  className="absolute top-1 right-1 rounded-full w-6 h-6 flex justify-center items-center z-10" style={{ backgroundColor: "rgba(0, 0, 0, 0.47)" }}
->
-  <Text className="text-white font-regular text-[22px] leading-[26px]">⨯</Text>
-</TouchableOpacity>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        {media.map((m, idx) => (
+          <View key={idx} style={{ marginRight: 8, position: "relative" }}>
+            <Image
+              source={{ uri: m.uri }}
+              style={{ width: 80, height: 80, borderRadius: 8 }}
+            />
+            <TouchableOpacity
+              onPress={() => onRemoveMedia(idx)}
+              className="absolute top-1 right-1 rounded-full w-6 h-6 flex justify-center items-center z-10" style={{ backgroundColor: "rgba(0, 0, 0, 0.47)" }}
+            >
+              <Text className="text-white font-regular text-[22px] leading-[26px]">⨯</Text>
+            </TouchableOpacity>
 
-    </View>
-  ))}
-</ScrollView>
+          </View>
+        ))}
+      </ScrollView>
 
 
       <CustomButton
-  containerStyles="mt-7 mb-10"
-  onPress={handleSubmit(onSubmit, (err) => {
-    console.log("Validation errors:", err);
-    Alert.alert("Validation failed", "Please fill all required fields properly.");
-  })}
-  title={isSubmitting ? "Adding..." : "Add Product"}
-  isLoading={isSubmitting}
-/>
+        containerStyles="mt-7 mb-10"
+        onPress={handleSubmit(onSubmit, (err) => {
+          console.log("Validation errors:", err);
+          Alert.alert("Validation failed", "Please fill all required fields properly.");
+        })}
+        title={isSubmitting ? "Adding..." : "Add Product"}
+        isLoading={isSubmitting}
+      />
 
-      
+
     </ScrollView>
   );
 };

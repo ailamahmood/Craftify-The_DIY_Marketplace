@@ -95,7 +95,6 @@ const ChatList = () => {
               chatId: item.chat_id,
               userId: chatPartnerId,
               name,
-              image,
             },
           })
         }

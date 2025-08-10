@@ -13,6 +13,7 @@ const CheckoutScreen = () => {
     const [cartItems, setCartItems] = useState([]);
     const [total, setTotal] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [charityTotal, setCharityTotal] = useState(0);
 
     // User profile info
     const [name, setName] = useState('');
@@ -58,8 +59,21 @@ const CheckoutScreen = () => {
             setLoading(true);
             const response = await axios.get(`${CART_API}/${customerId}`);
             setCartItems(response.data);
-            const totalAmount = response.data.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+            let totalAmount = 0;
+            let totalCharity = 0;
+
+            response.data.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                const charityPercent = parseFloat(item.charity_percentage || 0); // Ensure numeric
+                const itemCharity = itemTotal * (charityPercent / 100);
+
+                totalAmount += itemTotal;
+                totalCharity += itemCharity;
+            });
+
             setTotal(totalAmount);
+            setCharityTotal(totalCharity);
         } catch (error) {
             console.error('Error fetching cart:', error);
             Alert.alert('Error', 'Could not load cart items.');
@@ -67,6 +81,7 @@ const CheckoutScreen = () => {
             setLoading(false);
         }
     };
+
 
     const validatePhoneNumber = (phone) => {
         const pakistaniPattern = /^03[0-9]{9}$/;
@@ -165,6 +180,7 @@ const CheckoutScreen = () => {
                     {cartItems.map((item, index) => (
                         <View key={index} className="bg-white p-4 rounded-xl mb-3 border border-gray-200">
                             <Text className="text-base font-i28_semibold">{item.product_name}</Text>
+
                             {item.selected_options && (
                                 <View className="mt-1">
                                     {Object.entries(item.selected_options).map(([optionName, optionValue]) => (
@@ -174,17 +190,33 @@ const CheckoutScreen = () => {
                                     ))}
                                 </View>
                             )}
+
                             <Text className="mt-1 text-sm text-gray-800 font-i28_regular">Quantity: {item.quantity}</Text>
                             <Text className="mt-1 text-sm text-gray-800 font-i28_regular">Price: PKR {item.price}</Text>
+
+                            {/* Show charity percentage if applicable */}
+                            {item.charity_percentage > 0 && (
+                                <Text className="mt-1 text-sm text-green-600 font-i28_regular">
+                                    Charity: {item.charity_percentage}% of this item goes to charity
+                                </Text>
+                            )}
                         </View>
                     ))}
+
                 </View>
             </ScrollView>
 
             <View className="p-2">
-                <View className="flex-row justify-between items-center mb-4">
-                    <Text className="text-lg font-i28_semibold">Total: PKR {total.toFixed(2)}</Text>
+                <View className="flex-row justify-between items-center mb-1">
+                    <Text className="text-sm font-i28_regular text-gray-700">Charity Contribution:</Text>
+                    <Text className="text-base font-i28_regular text-green-700">PKR {charityTotal.toFixed(2)}</Text>
                 </View>
+
+                <View className="flex-row justify-between items-center mb-4">
+                    <Text className="text-lg font-i28_semibold">Total Amount:</Text>
+                    <Text className="text-lg font-i28_semibold">PKR {total.toFixed(2)}</Text>
+                </View>
+
                 <CustomButton
                     containerStyles="w-full"
                     disabled={loading}
@@ -192,6 +224,7 @@ const CheckoutScreen = () => {
                     onPress={handleCheckout}
                 />
             </View>
+
         </SafeAreaView>
     );
 };

@@ -54,4 +54,25 @@ router.post("/create", async (req, res) => {
     }
 });
 
+// GET store details by storeId
+router.get('/store-details/:storeId', async (req, res) => {
+    const { storeId } = req.params;
+    try {
+      const result = await pool.query(
+        'SELECT seller_id, store_name, store_logo, store_description FROM store WHERE store_id = $1',
+        [storeId]
+      );
+  
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'Store not found' });
+      }
+  
+      res.json(result.rows[0]);
+    } catch (err) {
+      console.error('Error fetching store details:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+  
+
 module.exports = router;

@@ -38,7 +38,7 @@ export default function WishlistCard({ product, onRemove }) {
         });
     };
 
-    return (
+    return ( 
         <TouchableOpacity onPress={handlePress} disabled={loading}>
             <View className="flex-row bg-white rounded-2xl shadow-md p-2 mb-3 items-center">
                 {/* Left: Product Image */}
@@ -54,7 +54,7 @@ export default function WishlistCard({ product, onRemove }) {
                         {product_name}
                     </Text>
                     <Text className="text-gray-600 text-sm font-i24_regular mt-1">
-                        ⭐ {rating}
+                        ⭐ {rating ? parseFloat(rating).toFixed(1) : '0.0'}
                     </Text>
                     <Text className="text-gray-600 text-base font-i24_semibold mt-1">
                         PKR {price}

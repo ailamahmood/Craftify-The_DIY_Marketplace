@@ -46,7 +46,14 @@ const SAccount = () => {
                         icon="user-circle"
                         title="Personal Info"
                         subtitle="Edit your account information"
-                        onPress={() => router.push("/")}
+                        onPress={() => router.push("/SellerPersonalInfo")}
+                    />
+
+                    <AccountOption
+                        icon="dropbox"
+                        title="My Orders"
+                        subtitle="View all your orders"
+                        onPress={() => router.push("/AllOrders")}
                     />
 
                     <AccountOption
@@ -59,8 +66,8 @@ const SAccount = () => {
                     <AccountOption
                         icon="building"
                         title="Charitable Organizations"
-                        subtitle="View partnered organization details"
-                        onPress={() => router.push("/CharityOrgs")}
+                        subtitle="View partnered org. and charity details"
+                        onPress={() => router.push("/CharityScreen")}
                     />
 
                     <AccountOption

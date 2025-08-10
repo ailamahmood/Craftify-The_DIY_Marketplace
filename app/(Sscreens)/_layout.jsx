@@ -21,6 +21,27 @@ const SscreensLayout = () => {
           }}
         />
 
+<Stack.Screen
+          name="AllOrders"
+          options={{
+            headerShown: false
+          }}
+        />
+
+<Stack.Screen
+          name="SellerOrderDetails"
+          options={{
+            headerShown: false
+          }}
+        />
+
+<Stack.Screen
+          name="SellerPersonalInfo"
+          options={{
+            headerShown: false
+          }}
+        />
+
       </Stack>
 
       <StatusBar style="light" />

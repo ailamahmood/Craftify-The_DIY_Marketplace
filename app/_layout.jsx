@@ -4,6 +4,7 @@ import { SplashScreen, Stack } from 'expo-router'    //Slot component is used to
 import { useFonts } from 'expo-font'
 import { useEffect } from 'react'
 import { CartProvider } from "../context/CartContext";
+import Toast from 'react-native-toast-message';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -58,6 +59,8 @@ const RootLayout = () => {
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(Chat)" options={{ headerShown: false }} />
       </Stack>
+
+      <Toast />
     </CartProvider>
   )
 }

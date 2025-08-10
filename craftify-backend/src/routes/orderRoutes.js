@@ -5,31 +5,42 @@ const router = express.Router();
 // ✅ GET all orders of a customer (sorted latest first)
 router.get('/:customerId', async (req, res) => {
     const { customerId } = req.params;
-
+  
     try {
-        const { rows } = await pool.query(
-            `SELECT 
-                o.order_id,
-                o.order_date,
-                o.status,
-                o.total_amount,
-                o.shipping_address,
-                o.phone_number,
-                o.customer_email,
-                s.store_name
-            FROM "order" o
-            JOIN store s ON o.store_id = s.store_id
-            WHERE o.customer_id = $1
-            ORDER BY o.order_date DESC`,
-            [customerId]
-        );
-
-        res.json(rows);
+      const { rows } = await pool.query(
+        `SELECT 
+            o.order_id,
+            o.order_date,
+            o.status,
+            o.total_amount,
+            o.shipping_address,
+            o.phone_number,
+            o.customer_email,
+            s.store_name,
+            COALESCE(SUM(
+                CASE 
+                    WHEN p.charity_percentage > 0 THEN 
+                        (oi.subtotal * p.charity_percentage / 100)
+                    ELSE 0 
+                END
+            ), 0) AS charity_amount
+        FROM "order" o
+        JOIN store s ON o.store_id = s.store_id
+        JOIN order_item oi ON o.order_id = oi.order_id
+        JOIN product p ON oi.product_id = p.product_id
+        WHERE o.customer_id = $1
+        GROUP BY o.order_id, s.store_name
+        ORDER BY o.order_date DESC`,
+        [customerId]
+      );
+  
+      res.json(rows);
     } catch (err) {
-        console.error('Error fetching orders:', err.message);
-        res.status(500).json({ error: err.message });
+      console.error('Error fetching orders:', err.message);
+      res.status(500).json({ error: err.message });
     }
-});
+  });
+  
 
 router.get('/items/:orderId/:customerId', async (req, res) => {
     const { orderId, customerId } = req.params;
@@ -44,6 +55,7 @@ router.get('/items/:orderId/:customerId', async (req, res) => {
                 oi.selected_options,
                 p.product_id,
                 p.product_name,
+                p.charity_percentage,
                 pm.media_url AS cover_image_url,
                 o.status,
                 EXISTS (
